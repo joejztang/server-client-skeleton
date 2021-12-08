@@ -1,0 +1,5 @@
+aiohttp
+starlette
+gunicorn
+uvicorn[standard]
+watchdog[watchmedo]

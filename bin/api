@@ -1,0 +1,11 @@
+#!/bin/sh
+
+set -e
+trap "docker-compose down -v -t 0" EXIT
+
+
+service=dev
+cmd=(uvicorn --host 0.0.0.0 apps.main:app)
+
+docker-compose build ${service}
+docker-compose run --service-ports ${service} watchmedo auto-restart --recursive --pattern="*.py;*.csv" --directory="." -- ${cmd[@]}

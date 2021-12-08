@@ -1,0 +1,13 @@
+{
+    "request": {
+        "method": "GET",
+        "urlPath": "ret"
+    },
+    "response": {
+        "status": 200,
+        "body": "return wiremock",
+        "headers": {
+            "Content-Type": "text/html"
+        }
+    }
+}

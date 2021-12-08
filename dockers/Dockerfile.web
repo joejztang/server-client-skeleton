@@ -1,0 +1,38 @@
+FROM python:3.8-slim-buster as base
+
+
+FROM base as development
+
+RUN apt-get update -y
+
+COPY requirements requirements
+RUN pip install -r requirements
+WORKDIR /srv
+COPY . .
+
+
+FROM base as production
+
+ENV CONTAINER_USER app
+ENV CONTAINER_GROUP app
+ENV CONTAINER_UID 1000
+ENV CONTAINER_GID 1000
+
+RUN apt-get update -y && apt-get install -y --no-install-recommends \
+    curl \
+    dumb-init \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
+
+# usual way playing with user and group
+RUN groupadd -g $CONTAINER_GID $CONTAINER_GROUP \
+    && useradd -l -m -u $CONTAINER_UID -g $CONTAINER_GID $CONTAINER_USER
+RUN mkdir -p /srv && chown $CONTAINER_USER:$CONTAINER_GROUP /srv
+WORKDIR /srv
+
+USER $CONTAINER_USER
+
+COPY --from=builder --chown=$CONTAINER_USER:$CONTAINER_GROUP $PYSETUP_PATH $PYSETUP_PATH
+COPY --chown=$CONTAINER_USER:$CONTAINER_GROUP . .
+EXPOSE 8000
+ENTRYPOINT ["/usr/bin/dumb-init", "--", "scripts/entrypoint"]

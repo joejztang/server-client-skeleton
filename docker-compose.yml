@@ -1,0 +1,21 @@
+---
+version: "3.7"
+services:
+  wiremock:
+    image: rodolpheche/wiremock
+    volumes:
+      - ./stubs:/home/wiremock
+    command: --https-port 8443
+  dev:
+    image: skeleton:dev
+    build:
+      context: .
+      target: development
+      dockerfile: dockers/Dockerfile.app
+    command: tail -F /dev/null
+    volumes:
+      - .:/srv
+    ports:
+      - 8000:8000
+    depends_on:
+      - wiremock

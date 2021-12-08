@@ -1,0 +1,4 @@
+#!/bin/sh
+set -e
+
+gunicorn -c gunicorn_conf.py apps.main:app

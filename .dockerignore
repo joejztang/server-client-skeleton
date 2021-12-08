@@ -1,0 +1,10 @@
+.git
+.dockerignore
+Dockerfile
+*.pyc
+__pycache__/
+.mypy_cache/
+.pytest_cache/
+.envrc
+
+app/models/
